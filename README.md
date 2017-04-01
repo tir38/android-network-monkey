@@ -14,7 +14,7 @@ Let Network Monkey loose to monkey test your OkHttp web requests. Inspired by Ne
 
 `NetworkMonkey` extends OkHttp3's [Interceptor](https://github.com/square/okhttp/wiki/Interceptors) and to change something about the request/response. It's best to add `NetworkMonkey` as an [ApplicationInterceptor](https://github.com/square/okhttp/wiki/Interceptors#application-interceptors) with `.addInterceptor()` (vs. a [NetworkInterceptor](https://github.com/square/okhttp/wiki/Interceptors#network-interceptors)). It's also best to add `NetworkMonkey` as the *first* Interceptor, if you use more than one. This ensures it has first say in monkeying with the request, and last say in monkeying with the response.
 
-```
+```java
 OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
 NetworkMonkey networkMonkey = ...
 okHttpClientBuilder.addInterceptor(networkMonkey);
@@ -25,7 +25,7 @@ Network Monkey can monkey with several parts of a network request:
 
 #### Wifi Connection
 
-```
+```java
 networkMonkey.shouldMonkeyWithWifiConnection();
 ```
 
@@ -34,7 +34,7 @@ This will tell Network Monkey to randomly disable a device's wifi connection. If
 
 #### Request Success
 
-```
+```java
 networkMonkey.shouldMonkeyWithRequestSuccess();
 ```
 
@@ -44,7 +44,7 @@ Sometimes OkHttp will throw an exception if there is an error with the network. 
 
 #### Response Code
 
-```
+```java
 networkMonkey.shouldMonkeyWithResponseCode();
 ```
 
@@ -53,7 +53,7 @@ This will tell Network Monkey to randomly replace a 200 success code with a 400.
 
 #### Response Time
 
-```
+```java
 networkMonkey.shouldMonkeyWithResponseTime(10000);
 ```
 
@@ -62,7 +62,7 @@ This will tell Network Monkey to randomly add a time delay (in milliseconds) to 
 
 #### Jerk Mode
 
-```
+```java
 networkMonkey.enableJerkMode();
 ```
             
@@ -78,7 +78,7 @@ Obviously you don't want to run Network Monkey during production. This lib provi
 
 The simplest approach is to check `BuildConfig.DEBUG` and use `LiveNetworkMonkey`:
 
-```
+```java
 // add NetworkMonkey but only on debug builds
 if (BuildConfig.DEBUG) {
     Context context = ....
@@ -95,7 +95,7 @@ if (BuildConfig.DEBUG) {
 If your app relies on dependency injection you can simply provide `LiveNetworkMonkey` in debug and `NoOpNetworkMonkey` in production:
 
 
-```
+```java
 @Provides
 @Singleton
 NetworkMonkey provideNetworkMonkey(Context context) {
@@ -103,7 +103,7 @@ NetworkMonkey provideNetworkMonkey(Context context) {
 }
 ```
 
-```
+```java
 @Provides
 @Singleton
 NetworkMonkey provideNetworkMonkey(Context context) {
@@ -115,3 +115,40 @@ If you run instrumentation tests that depend on your `OkHttpClient`, it's sugges
 
 ## Additional Notes
 * The `Context` passed to `LiveNetworkMonkey` is turned into an application context, so don't worry about leaking your Activities.
+
+
+## Download
+
+Download via Maven:
+```xml
+<dependency>
+  <groupId>io.jasonatwood</groupId>
+  <artifactId>networkmonkey</artifactId>
+  <version>1.0</version>
+  <type>pom</type>
+</dependency>
+```
+
+or Gradle:
+```groovy
+compile 'io.jasonatwood:networkmonkey:1.0'
+```
+
+Network Monkey requires at minimum Android API 14.
+
+
+## License
+
+    Copyright 2017 Jason Atwood
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
