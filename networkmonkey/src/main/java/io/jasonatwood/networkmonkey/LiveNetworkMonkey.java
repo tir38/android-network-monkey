@@ -73,7 +73,7 @@ public class LiveNetworkMonkey implements NetworkMonkey {
 
         if (!granted) {
             Log.w(TAG, "You need to add android.permission.CHANGE_WIFI_STATE permission before" +
-                    "Monkeying with Wifi");
+                    " monkeying with wifi");
             return;
         }
 
