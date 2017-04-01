@@ -30,7 +30,8 @@ networkMonkey.shouldMonkeyWithWifiConnection();
 ```
 
 This will tell Network Monkey to randomly disable a device's wifi connection. If this is your only data connection this is a good way to test your apps' response to 
-`connectivityManager.getActiveNetworkInfo()`.
+`connectivityManager.getActiveNetworkInfo()`. See [Additional Notes](#Additional Notes)
+ section about runtime perimssions.
 
 #### Request Success
 
@@ -115,6 +116,10 @@ If you run instrumentation tests that depend on your `OkHttpClient`, it's sugges
 
 ## Additional Notes
 * The `Context` passed to `LiveNetworkMonkey` is turned into an application context, so don't worry about leaking your Activities.
+
+* If you are call `networkMonkey.shouldMonkeyWithWifiConnection()` your app will need the     `<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>` permission. Unless your app already requests this permission, you should put this in the `AndroidManifest.xml` specific to your debug builds.
+
+* Every time Network Monkey decides to monkey with a connection, you will be notfied by a log in Logcat.
 
 
 ## Download

@@ -2,6 +2,7 @@ package io.jasonatwood.networkmonkey;
 
 import android.content.Context;
 import android.net.wifi.WifiManager;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import java.io.IOException;
@@ -65,10 +66,22 @@ public class LiveNetworkMonkey implements NetworkMonkey {
             return;
         }
 
+        boolean granted
+                = ContextCompat.checkSelfPermission(applicationContext,
+                "android.permission.CHANGE_WIFI_STATE")
+                == android.content.pm.PackageManager.PERMISSION_GRANTED;
+
+        if (!granted) {
+            Log.w(TAG, "You need to add android.permission.CHANGE_WIFI_STATE permission before" +
+                    "Monkeying with Wifi");
+            return;
+        }
+
         WifiManager wifi = (WifiManager) applicationContext
                 .getApplicationContext()
                 .getSystemService(Context.WIFI_SERVICE);
 
+        //noinspection MissingPermission suppress since we check and early return above.
         wifi.setWifiEnabled(false);
         Log.e(TAG, "Turning off wifi.");
 
