@@ -12,7 +12,7 @@ Let Network Monkey loose to monkey test your OkHttp web requests. Inspired by Ne
 
 ## Usage
 
-`NetworkMonkey` extends OkHttp3's [Interceptor](https://github.com/square/okhttp/wiki/Interceptors) and to change something about the request/response. It's best to add `NetworkMonkey` as an [ApplicationInterceptor](https://github.com/square/okhttp/wiki/Interceptors#application-interceptors) with `.addInterceptor()` (vs. a [NetworkInterceptor](https://github.com/square/okhttp/wiki/Interceptors#network-interceptors)). It's also best to add `NetworkMonkey` as the *first* Interceptor, if you use more than one. This ensures it has first say in monkeying with the request, and last say in monkeying with the response.
+`NetworkMonkey` extends OkHttp3's [Interceptor](https://github.com/square/okhttp/wiki/Interceptors) to change something about the request/response. It's best to add `NetworkMonkey` as an [ApplicationInterceptor](https://github.com/square/okhttp/wiki/Interceptors#application-interceptors) with `.addInterceptor()` (vs. a [NetworkInterceptor](https://github.com/square/okhttp/wiki/Interceptors#network-interceptors)). It's also best to add `NetworkMonkey` as the *first* Interceptor, if you use multiple Interceptors. This ensures it has first say in monkeying with the request, and last say in monkeying with the response.
 
 ```java
 OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
@@ -29,8 +29,8 @@ Network Monkey can monkey with several parts of a network request:
 networkMonkey.shouldMonkeyWithWifiConnection();
 ```
 
-This will tell Network Monkey to randomly disable a device's wifi connection. If this is your only data connection this is a good way to test your apps' response to 
-`connectivityManager.getActiveNetworkInfo()`. See [Additional Notes](#Additional Notes)
+This will tell Network Monkey to randomly disable a device's wifi connection. If this is your device's only data connection this is a good way to test your apps' response to 
+`connectivityManager.getActiveNetworkInfo()`. See [Additional Notes](#additional_notes)
  section about runtime perimssions.
 
 #### Request Success
@@ -39,7 +39,7 @@ This will tell Network Monkey to randomly disable a device's wifi connection. If
 networkMonkey.shouldMonkeyWithRequestSuccess();
 ```
 
-Sometimes OkHttp will throw an exception if there is an error with the network. This method will tell Network Monkey to randomly throw a `IOException` during a request/response.
+Sometimes OkHttp will throw an exception if there is an error with the network. This method will tell Network Monkey to randomly throw a `IOException` during a request/response to mimic OkHttp's behavior.
 
 
 
@@ -117,7 +117,7 @@ If you run instrumentation tests that depend on your `OkHttpClient`, it's sugges
 ## Additional Notes
 * The `Context` passed to `LiveNetworkMonkey` is turned into an application context, so don't worry about leaking your Activities.
 
-* If you are call `networkMonkey.shouldMonkeyWithWifiConnection()` your app will need the     `<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>` permission. Unless your app already requests this permission, you should put this in the `AndroidManifest.xml` specific to your debug builds.
+* If you call `networkMonkey.shouldMonkeyWithWifiConnection()` your app will need the     `<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>` permission. Unless your app already requests this permission, you should put this in the `AndroidManifest.xml` specific to your debug builds.
 
 * Every time Network Monkey decides to monkey with a connection, you will be notfied by a log in Logcat.
 
