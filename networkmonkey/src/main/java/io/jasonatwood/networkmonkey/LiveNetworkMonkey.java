@@ -124,10 +124,10 @@ public class LiveNetworkMonkey implements NetworkMonkey {
         }
     }
 
-    private void simulateRequestFailure() {
+    private void simulateRequestFailure() throws IOException {
         if (shouldMonkeyWithRequestSuccess && shouldRandomlyDoSomething()) {
             Log.e(TAG, "Simulating request failure");
-            throw new RuntimeException("Monkey Exception");
+            throw new IOException("Monkey Exception");
         }
     }
 
