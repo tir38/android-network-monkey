@@ -39,7 +39,7 @@ This will tell Network Monkey to randomly disable a device's wifi connection. If
 networkMonkey.shouldMonkeyWithRequestSuccess();
 ```
 
-Sometimes OkHttp will throw an exception if there is an error with the network. This method will tell Network Monkey to randomly throw a `RuntimeException` during a request/response.
+Sometimes OkHttp will throw an exception if there is an error with the network. This method will tell Network Monkey to randomly throw a `IOException` during a request/response.
 
 
 
