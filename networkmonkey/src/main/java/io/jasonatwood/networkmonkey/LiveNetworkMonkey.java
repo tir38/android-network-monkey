@@ -54,14 +54,15 @@ public class LiveNetworkMonkey implements NetworkMonkey {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        disableWifi();
-        addResponseDelay();
-        simulateRequestFailure();
+        String urlString = request.url().toString();
+        disableWifi(urlString);
+        addResponseDelay(urlString);
+        simulateRequestFailure(urlString);
         Response response = chain.proceed(request);
-        return setResponseCodeTo404(response);
+        return setResponseCodeTo404(urlString, response);
     }
 
-    private void disableWifi() {
+    private void disableWifi(String urlString) {
         if (!shouldMonkeyWithWifiConnection || !shouldRandomlyDoSomething()) {
             return;
         }
@@ -83,7 +84,7 @@ public class LiveNetworkMonkey implements NetworkMonkey {
 
         //noinspection MissingPermission suppress since we check and early return above.
         wifi.setWifiEnabled(false);
-        Log.e(TAG, "Turning off wifi.");
+        Log.e(TAG, "Turning off wifi for request " + urlString);
 
         // sleep so that wifi manager has time to turn off wifi antenna
         try {
@@ -95,7 +96,7 @@ public class LiveNetworkMonkey implements NetworkMonkey {
         // TODO turn wifi back on
     }
 
-    private Response setResponseCodeTo404(Response response) {
+    private Response setResponseCodeTo404(String urlString, Response response) {
         if (!shouldMonkeyWithResponseCode || !shouldRandomlyDoSomething()) {
             return response;
         }
@@ -105,18 +106,18 @@ public class LiveNetworkMonkey implements NetworkMonkey {
             return response;
         }
 
-        Log.e(TAG, "Changing response code to 404.");
+        Log.e(TAG, "Changing response code to 404 for request " + urlString);
         return response.newBuilder()
                 .code(404)
                 .build();
     }
 
-    private void addResponseDelay() {
+    private void addResponseDelay(String urlString) {
         if (delayInMilliseconds == 0 || !shouldRandomlyDoSomething()) {
             return;
         }
 
-        Log.e(TAG, "Delaying response by " + delayInMilliseconds + " milliseconds");
+        Log.e(TAG, "Delaying response by " + delayInMilliseconds + " milliseconds for request " + urlString);
         try {
             Thread.sleep(delayInMilliseconds);
         } catch (InterruptedException e) {
@@ -124,9 +125,9 @@ public class LiveNetworkMonkey implements NetworkMonkey {
         }
     }
 
-    private void simulateRequestFailure() throws IOException {
+    private void simulateRequestFailure(String urlString) throws IOException {
         if (shouldMonkeyWithRequestSuccess && shouldRandomlyDoSomething()) {
-            Log.e(TAG, "Simulating request failure");
+            Log.e(TAG, "Simulating request failure  for request " + urlString);
             throw new IOException("Monkey Exception");
         }
     }
