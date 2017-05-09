@@ -31,7 +31,7 @@ networkMonkey.shouldMonkeyWithWifiConnection();
 
 This will tell Network Monkey to randomly disable a device's wifi connection. If this is your device's only data connection this is a good way to test your apps' response to 
 `connectivityManager.getActiveNetworkInfo()`. See [Additional Notes](#additional_notes)
- section about runtime perimssions.
+ section about runtime permissions.
 
 #### Request Success
 
@@ -69,13 +69,13 @@ networkMonkey.enableJerkMode();
             
 Normally the randomness of the above adjustments is 1:10, meaning that 10% of the time Network Monkey will monkey with something.
 
-However, when jerk mode is enabled this increases to 1:2, or half the time. While this can be more frustrating during development, it esures that your app is always under some sort of network stress.
+However, when jerk mode is enabled this increases to 1:2, or half the time. While this can be more frustrating during development, it ensures that your app is always under some sort of network stress.
 
 
 
 ## Debug vs Production
 
-Obviously you don't want to run Network Monkey during production. This lib provides several ways to help achieve different behaviour for debug and production apps, based on your app's existing architecture. `NetworkMonkey` is just an interface implemented by two supplied classes: `LiveNetworkMonkey` and `NoOpNetworkMonkey`.
+Obviously you don't want to run Network Monkey during production. This lib provides several ways to help achieve different behavior for debug and production apps, based on your app's existing architecture. `NetworkMonkey` is just an interface implemented by two supplied classes: `LiveNetworkMonkey` and `NoOpNetworkMonkey`.
 
 The simplest approach is to check `BuildConfig.DEBUG` and use `LiveNetworkMonkey`:
 
@@ -119,7 +119,7 @@ If you run instrumentation tests that depend on your `OkHttpClient`, it's sugges
 
 * If you call `networkMonkey.shouldMonkeyWithWifiConnection()` your app will need the     `<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>` permission. Unless your app already requests this permission, you should put this in the `AndroidManifest.xml` specific to your debug builds.
 
-* Every time Network Monkey decides to monkey with a connection, you will be notfied by a log in Logcat.
+* Every time Network Monkey decides to monkey with a connection, you will be notified by a log in Logcat.
 
 
 ## Download
@@ -129,14 +129,14 @@ Download via Maven:
 <dependency>
   <groupId>io.jasonatwood</groupId>
   <artifactId>networkmonkey</artifactId>
-  <version>1.0</version>
+  <version>1.0.1</version>
   <type>pom</type>
 </dependency>
 ```
 
 or Gradle:
 ```groovy
-compile 'io.jasonatwood:networkmonkey:1.0'
+compile 'io.jasonatwood:networkmonkey:1.0.1'
 ```
 
 Network Monkey requires at minimum Android API 14.
