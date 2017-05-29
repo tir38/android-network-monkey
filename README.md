@@ -10,6 +10,9 @@ Let Network Monkey loose to monkey test your OkHttp web requests. Inspired by Ne
 [ ![Download](https://api.bintray.com/packages/jasonatwood/maven/networkmonkey/images/download.svg) ](https://bintray.com/jasonatwood/maven/networkmonkey/_latestVersion)
 
 
+[ ![MethodCount](https://img.shields.io/badge/Methods and size-core: 48 | deps: 2784 | 5 KB-e91e63.svg) ](http://www.methodscount.com/?lib=io.jasonatwood%3Anetworkmonkey%3A1.0.2)
+
+
 ## Usage
 
 `NetworkMonkey` extends OkHttp3's [Interceptor](https://github.com/square/okhttp/wiki/Interceptors) to change something about the request/response. It's best to add `NetworkMonkey` as an [ApplicationInterceptor](https://github.com/square/okhttp/wiki/Interceptors#application-interceptors) with `.addInterceptor()` (vs. a [NetworkInterceptor](https://github.com/square/okhttp/wiki/Interceptors#network-interceptors)). It's also best to add `NetworkMonkey` as the *first* Interceptor, if you use multiple Interceptors. This ensures it has first say in monkeying with the request, and last say in monkeying with the response.
@@ -129,14 +132,14 @@ Download via Maven:
 <dependency>
   <groupId>io.jasonatwood</groupId>
   <artifactId>networkmonkey</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
   <type>pom</type>
 </dependency>
 ```
 
 or Gradle:
 ```groovy
-compile 'io.jasonatwood:networkmonkey:1.0.1'
+compile 'io.jasonatwood:networkmonkey:1.0.2'
 ```
 
 Network Monkey requires at minimum Android API 14.
@@ -164,6 +167,8 @@ Network Monkey requires at minimum Android API 14.
  * move .aar into dogfood project and run project
  * bump `libraryVersion` and `libraryVersionCode` in build.gradle
  * update CHANGELOG.md
+ * updated README
  * build and upload to bintray `./gradlew clean bintrayUpload`
  * ensure latest version is uploaded `https://bintray.com/jasonatwood/maven/networkmonkey`
  * bump version number in dogfood project and ensure it builds
+ * commit and push
