@@ -10,7 +10,7 @@ Let Network Monkey loose to monkey test your OkHttp web requests. Inspired by Ne
 [ ![Download](https://api.bintray.com/packages/jasonatwood/maven/networkmonkey/images/download.svg) ](https://bintray.com/jasonatwood/maven/networkmonkey/_latestVersion)
 
 
-[ ![MethodCount](https://img.shields.io/badge/Methods and size-core: 48 | deps: 2784 | 5 KB-e91e63.svg) ](http://www.methodscount.com/?lib=io.jasonatwood%3Anetworkmonkey%3A1.0.2)
+[ ![MethodCount](https://img.shields.io/badge/Methods%20and%20size-core:%2048%20%7C%20deps:%202784%20%7C%205%20KB-e91e63.svg) ](http://www.methodscount.com/?lib=io.jasonatwood%3Anetworkmonkey%3A1.0.2)
 
 
 ## Usage
