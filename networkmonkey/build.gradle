@@ -15,8 +15,8 @@ ext {
     siteUrl = 'https://github.com/tir38/android-network-monkey'
     gitUrl = 'https://github.com/tir38/android-network-monkey.git'
 
-    libraryVersion = '1.0.1'
-    libraryVersionCode = 2
+    libraryVersion = '1.0.2'
+    libraryVersionCode = 3
 
     developerId = 'jasonatwood'
     developerName = 'Jason Atwood'
@@ -45,7 +45,6 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.3.0'
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
 }
 
@@ -92,18 +91,7 @@ task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
 }
 
-//    task javadoc(type: Javadoc) {
-//        source = android.sourceSets.main.java.srcDirs
-//        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-//    }
-
-//task javadocJar(type: Jar, dependsOn: javadoc) {
-//    classifier = 'javadoc'
-//    from javadoc.destinationDir
-//}
-
 artifacts {
-//    archives javadocJar
     archives sourcesJar
 }
 

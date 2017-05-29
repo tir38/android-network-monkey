@@ -157,3 +157,13 @@ Network Monkey requires at minimum Android API 14.
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+    
+    
+## Release Steps
+ * build .aar locally `./gradlew clean assemble`
+ * move .aar into dogfood project and run project
+ * bump `libraryVersion` and `libraryVersionCode` in build.gradle
+ * update CHANGELOG.md
+ * build and upload to bintray `./gradlew clean bintrayUpload`
+ * ensure latest version is uploaded `https://bintray.com/jasonatwood/maven/networkmonkey`
+ * bump version number in dogfood project and ensure it builds

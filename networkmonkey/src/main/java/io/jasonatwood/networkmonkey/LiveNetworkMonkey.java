@@ -2,14 +2,12 @@ package io.jasonatwood.networkmonkey;
 
 import android.content.Context;
 import android.net.wifi.WifiManager;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import java.io.IOException;
 
 import okhttp3.Request;
 import okhttp3.Response;
-
 
 public class LiveNetworkMonkey implements NetworkMonkey {
 
@@ -67,15 +65,15 @@ public class LiveNetworkMonkey implements NetworkMonkey {
             return;
         }
 
-        boolean granted
-                = ContextCompat.checkSelfPermission(applicationContext,
-                "android.permission.CHANGE_WIFI_STATE")
-                == android.content.pm.PackageManager.PERMISSION_GRANTED;
-
-        if (!granted) {
-            Log.w(TAG, "You need to add android.permission.CHANGE_WIFI_STATE permission before" +
-                    " monkeying with wifi");
-            return;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            boolean granted = applicationContext
+                    .checkSelfPermission("android.permission.CHANGE_WIFI_STATE")
+                    == android.content.pm.PackageManager.PERMISSION_GRANTED;
+            if (!granted) {
+                Log.w(TAG, "You need to add android.permission.CHANGE_WIFI_STATE permission " +
+                        "before monkeying with wifi");
+                return;
+            }
         }
 
         WifiManager wifi = (WifiManager) applicationContext
@@ -117,7 +115,8 @@ public class LiveNetworkMonkey implements NetworkMonkey {
             return;
         }
 
-        Log.e(TAG, "Delaying response by " + delayInMilliseconds + " milliseconds for request " + urlString);
+        Log.e(TAG, "Delaying response by " + delayInMilliseconds
+                + " milliseconds for request " + urlString);
         try {
             Thread.sleep(delayInMilliseconds);
         } catch (InterruptedException e) {
