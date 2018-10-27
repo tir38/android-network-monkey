@@ -2,7 +2,7 @@
 Let Network Monkey loose to monkey test your OkHttp web requests. Inspired by Netflix's [Chaos Monkey](https://github.com/Netflix/chaosmonkey), Network Monkey will randomly: 
 
 * turn off a device's wifi before making request
-* replace `200` response codes with `400`
+* replace `200` response codes with `404`
 * insert response time delays
 * throw network exceptions during request/response
 
@@ -53,7 +53,7 @@ Sometimes OkHttp will throw an exception if there is an error with the network. 
 networkMonkey.shouldMonkeyWithResponseCode();
 ```
 
-This will tell Network Monkey to randomly replace a 200 success code with a 400. If Network Monkey detects a non-200 code it will let that pass through. That way if your app really is experiencing a problem from your network you are alerted to it.
+This will tell Network Monkey to randomly replace a 200 success code with a 404. If Network Monkey detects a non-200 code it will let that pass through. That way if your app really is experiencing a problem from your network you are alerted to it.
 
 
 #### Response Time
