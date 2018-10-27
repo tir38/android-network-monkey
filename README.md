@@ -35,6 +35,8 @@ networkMonkey.shouldMonkeyWithWifiConnection();
 This will tell Network Monkey to randomly disable a device's wifi connection. If this is your device's only data connection this is a good way to test your apps' response to 
 `connectivityManager.getActiveNetworkInfo()`. See [Additional Notes](#additional_notes)
  section about runtime permissions.
+ 
+ After 5 seconds Network Monkey will turn wifi back on (assuming your app didn't crash).
 
 #### Request Success
 
@@ -43,7 +45,6 @@ networkMonkey.shouldMonkeyWithRequestSuccess();
 ```
 
 Sometimes OkHttp will throw an exception if there is an error with the network. This method will tell Network Monkey to randomly throw a `IOException` during a request/response to mimic OkHttp's behavior.
-
 
 
 #### Response Code
@@ -75,7 +76,6 @@ Normally the randomness of the above adjustments is 1:10, meaning that 10% of th
 However, when jerk mode is enabled this increases to 1:2, or half the time. While this can be more frustrating during development, it ensures that your app is always under some sort of network stress.
 
 
-
 ## Debug vs Production
 
 Obviously you don't want to run Network Monkey during production. This lib provides several ways to help achieve different behavior for debug and production apps, based on your app's existing architecture. `NetworkMonkey` is just an interface implemented by two supplied classes: `LiveNetworkMonkey` and `NoOpNetworkMonkey`.
@@ -94,7 +94,7 @@ if (BuildConfig.DEBUG) {
     networkMonkey.enableJerkMode();
     okHttpClientBuilder.addInterceptor(networkMonkey);
 }
-````
+```
 
 If your app relies on dependency injection you can simply provide `LiveNetworkMonkey` in debug and `NoOpNetworkMonkey` in production:
 
@@ -128,6 +128,7 @@ If you run instrumentation tests that depend on your `OkHttpClient`, it's sugges
 ## Download
 
 Download via Maven:
+
 ```xml
 <dependency>
   <groupId>io.jasonatwood</groupId>
@@ -138,6 +139,7 @@ Download via Maven:
 ```
 
 or Gradle:
+
 ```groovy
 compile 'io.jasonatwood:networkmonkey:1.0.2'
 ```
