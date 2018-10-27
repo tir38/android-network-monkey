@@ -3,8 +3,8 @@
 * Tone down Log.e to Log.w
 * Turn wifi back on after 5 seconds (#4)
 * Update AGP, Gradle, compileSdk, targetSdk, OkHttp
-* Fixes "not actually 1 in 10" (#6)
 * Fixes "monkey before sending request" (#2)
+* Fix 1-in-10 bug (#6)
 
 ## 1.0.2
 * Remove dependency on support lib

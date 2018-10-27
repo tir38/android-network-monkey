@@ -8,6 +8,9 @@ import android.os.Looper;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -20,34 +23,36 @@ public class LiveNetworkMonkey implements NetworkMonkey {
 
     private final Context applicationContext;
 
-    private boolean shouldMonkeyWithWifiConnection;
-    private boolean shouldMonkeyWithResponseCode;
-    private boolean shouldMonkeyWithRequestSuccess;
+    private Set<Action> enabledActions;
     private boolean jerkMode;
     private int delayInMilliseconds;
 
     public LiveNetworkMonkey(Context context) {
         applicationContext = context.getApplicationContext();
+        enabledActions = new HashSet<>();
     }
 
     @Override
     public void shouldMonkeyWithWifiConnection() {
-        shouldMonkeyWithWifiConnection = true;
+        enabledActions.add(Action.WIFI_CONNECTION);
     }
 
     @Override
     public void shouldMonkeyWithResponseCode() {
-        shouldMonkeyWithResponseCode = true;
+        enabledActions.add(Action.RESPONSE_CODE);
     }
 
     @Override
     public void shouldMonkeyWithResponseTime(int delayInMilliseconds) {
-        this.delayInMilliseconds = delayInMilliseconds;
+        if (delayInMilliseconds > 0) {
+            enabledActions.add(Action.DELAY);
+            this.delayInMilliseconds = delayInMilliseconds;
+        }
     }
 
     @Override
     public void shouldMonkeyWithRequestSuccess() {
-        shouldMonkeyWithRequestSuccess = true;
+        enabledActions.add(Action.REQUEST_FAILURE);
     }
 
     @Override
@@ -58,20 +63,40 @@ public class LiveNetworkMonkey implements NetworkMonkey {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
+        if (enabledActions.isEmpty() || !shouldRandomlyMonkey()) {
+            return chain.proceed(request);
+        }
+
+        Action randomAction = getRandomAction();
+        if (randomAction == null) {
+            return chain.proceed(request);
+        }
+
         String urlString = request.url().toString();
-        disableWifi(urlString);
-        addResponseDelay(urlString);
-        simulateRequestFailure(urlString);
+        switch (randomAction) {
+            case WIFI_CONNECTION:
+                disableWifi(urlString);
+                break;
+
+            case REQUEST_FAILURE:
+                simulateRequestFailure(urlString);
+                break;
+
+            case DELAY:
+                addResponseDelay(urlString);
+                break;
+        }
+
         Response response = chain.proceed(request);
-        return setResponseCodeTo404(urlString, response);
+
+        if (randomAction == Action.RESPONSE_CODE) {
+            return setResponseCodeTo404(urlString, response);
+        }
+        return response;
     }
 
     @SuppressLint("MissingPermission")
     private void disableWifi(String urlString) {
-        if (!shouldMonkeyWithWifiConnection || !shouldRandomlyDoSomething()) {
-            return;
-        }
-
         checkChangeWifiPermissions();
 
         WifiManager wifi = (WifiManager) applicationContext
@@ -120,10 +145,6 @@ public class LiveNetworkMonkey implements NetworkMonkey {
     }
 
     private Response setResponseCodeTo404(String urlString, Response response) {
-        if (!shouldMonkeyWithResponseCode || !shouldRandomlyDoSomething()) {
-            return response;
-        }
-
         // if something really did go wrong, we want to know about it.
         if (!response.isSuccessful()) {
             return response;
@@ -136,10 +157,6 @@ public class LiveNetworkMonkey implements NetworkMonkey {
     }
 
     private void addResponseDelay(String urlString) {
-        if (delayInMilliseconds == 0 || !shouldRandomlyDoSomething()) {
-            return;
-        }
-
         Log.w(TAG, "Delaying response by " + delayInMilliseconds
                 + " milliseconds for request " + urlString);
         try {
@@ -150,13 +167,11 @@ public class LiveNetworkMonkey implements NetworkMonkey {
     }
 
     private void simulateRequestFailure(String urlString) throws IOException {
-        if (shouldMonkeyWithRequestSuccess && shouldRandomlyDoSomething()) {
-            Log.w(TAG, "Simulating request failure  for request " + urlString);
-            throw new IOException("Monkey Exception");
-        }
+        Log.w(TAG, "Simulating request failure  for request " + urlString);
+        throw new IOException("Monkey Exception");
     }
 
-    private boolean shouldRandomlyDoSomething() {
+    private boolean shouldRandomlyMonkey() {
         if (jerkMode) {
             return (System.currentTimeMillis() % 2 == 0); // 1:2 chance of doing something
         }
@@ -175,5 +190,25 @@ public class LiveNetworkMonkey implements NetworkMonkey {
                 return;
             }
         }
+    }
+
+    private Action getRandomAction() {
+        int size = enabledActions.size();
+        int randomInt = new Random().nextInt(size);
+        int i = 0;
+        for (Action action : enabledActions) {
+            if (i == randomInt) {
+                return action;
+            }
+            i++;
+        }
+        return null;
+    }
+
+    private enum Action {
+        WIFI_CONNECTION,
+        RESPONSE_CODE,
+        REQUEST_FAILURE,
+        DELAY
     }
 }
