@@ -72,31 +72,34 @@ public class LiveNetworkMonkey implements NetworkMonkey {
             return chain.proceed(request);
         }
 
+        String method = request.method();
         String urlString = request.url().toString();
+        String description = String.format("%s: %s", method, urlString);
+
         switch (randomAction) {
             case WIFI_CONNECTION:
-                disableWifi(urlString);
+                disableWifi(description);
                 break;
 
             case REQUEST_FAILURE:
-                simulateRequestFailure(urlString);
+                simulateRequestFailure(description);
                 break;
 
             case DELAY:
-                addResponseDelay(urlString);
+                addResponseDelay(description);
                 break;
         }
 
         Response response = chain.proceed(request);
 
         if (randomAction == Action.RESPONSE_CODE) {
-            return setResponseCodeTo404(urlString, response);
+            return setResponseCodeTo404(description, response);
         }
         return response;
     }
 
     @SuppressLint("MissingPermission")
-    private void disableWifi(String urlString) {
+    private void disableWifi(String description) {
         checkChangeWifiPermissions();
 
         WifiManager wifi = (WifiManager) applicationContext
@@ -109,7 +112,7 @@ public class LiveNetworkMonkey implements NetworkMonkey {
         }
 
         wifi.setWifiEnabled(false);
-        Log.w(TAG, "Turning off wifi for request " + urlString);
+        Log.w(TAG, "Turning off wifi for request " + description);
 
         // sleep so that wifi manager has time to turn off wifi antenna
         try {
@@ -144,7 +147,7 @@ public class LiveNetworkMonkey implements NetworkMonkey {
         Log.d(TAG, "Turning wifi back on");
     }
 
-    private Response setResponseCodeTo404(String urlString, Response response) {
+    private Response setResponseCodeTo404(String description, Response response) {
         // if something really did go wrong, we want to know about it.
         if (!response.isSuccessful()) {
             return response;
@@ -156,15 +159,15 @@ public class LiveNetworkMonkey implements NetworkMonkey {
             return response;
         }
 
-        Log.w(TAG, "Changing response code to 404 for request " + urlString);
+        Log.w(TAG, "Changing response code to 404 for request " + description);
         return response.newBuilder()
                 .code(404)
                 .build();
     }
 
-    private void addResponseDelay(String urlString) {
+    private void addResponseDelay(String description) {
         Log.w(TAG, "Delaying response by " + delayInMilliseconds
-                + " milliseconds for request " + urlString);
+                + " milliseconds for request " + description);
         try {
             Thread.sleep(delayInMilliseconds);
         } catch (InterruptedException e) {
@@ -172,8 +175,8 @@ public class LiveNetworkMonkey implements NetworkMonkey {
         }
     }
 
-    private void simulateRequestFailure(String urlString) throws IOException {
-        Log.w(TAG, "Simulating request failure  for request " + urlString);
+    private void simulateRequestFailure(String description) throws IOException {
+        Log.w(TAG, "Simulating request failure  for request " + description);
         throw new IOException("Monkey Exception");
     }
 
@@ -216,7 +219,6 @@ public class LiveNetworkMonkey implements NetworkMonkey {
                 || method.equals("HEAD")
                 || method.equals("DELETE")
                 || method.equals("PUT"));
-
     }
 
     private enum Action {
@@ -225,5 +227,4 @@ public class LiveNetworkMonkey implements NetworkMonkey {
         REQUEST_FAILURE,
         DELAY
     }
-
 }
