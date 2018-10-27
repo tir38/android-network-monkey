@@ -150,6 +150,12 @@ public class LiveNetworkMonkey implements NetworkMonkey {
             return response;
         }
 
+        String method = response.request().method();
+        if (!isMethodIdempotent(method)) {
+            Log.d(TAG, "Method not idempotent; ignoring");
+            return response;
+        }
+
         Log.w(TAG, "Changing response code to 404 for request " + urlString);
         return response.newBuilder()
                 .code(404)
@@ -205,10 +211,19 @@ public class LiveNetworkMonkey implements NetworkMonkey {
         return null;
     }
 
+    private boolean isMethodIdempotent(String method) {
+        return (method.equals("GET")
+                || method.equals("HEAD")
+                || method.equals("DELETE")
+                || method.equals("PUT"));
+
+    }
+
     private enum Action {
         WIFI_CONNECTION,
         RESPONSE_CODE,
         REQUEST_FAILURE,
         DELAY
     }
+
 }
