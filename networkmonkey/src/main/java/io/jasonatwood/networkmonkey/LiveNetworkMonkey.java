@@ -84,7 +84,7 @@ public class LiveNetworkMonkey implements NetworkMonkey {
         }
 
         wifi.setWifiEnabled(false);
-        Log.e(TAG, "Turning off wifi for request " + urlString);
+        Log.w(TAG, "Turning off wifi for request " + urlString);
 
         // sleep so that wifi manager has time to turn off wifi antenna
         try {
@@ -116,7 +116,7 @@ public class LiveNetworkMonkey implements NetworkMonkey {
         }
 
         wifi.setWifiEnabled(true);
-        Log.e(TAG, "Turning wifi back on");
+        Log.d(TAG, "Turning wifi back on");
     }
 
     private Response setResponseCodeTo404(String urlString, Response response) {
@@ -129,7 +129,7 @@ public class LiveNetworkMonkey implements NetworkMonkey {
             return response;
         }
 
-        Log.e(TAG, "Changing response code to 404 for request " + urlString);
+        Log.w(TAG, "Changing response code to 404 for request " + urlString);
         return response.newBuilder()
                 .code(404)
                 .build();
@@ -140,7 +140,7 @@ public class LiveNetworkMonkey implements NetworkMonkey {
             return;
         }
 
-        Log.e(TAG, "Delaying response by " + delayInMilliseconds
+        Log.w(TAG, "Delaying response by " + delayInMilliseconds
                 + " milliseconds for request " + urlString);
         try {
             Thread.sleep(delayInMilliseconds);
@@ -151,7 +151,7 @@ public class LiveNetworkMonkey implements NetworkMonkey {
 
     private void simulateRequestFailure(String urlString) throws IOException {
         if (shouldMonkeyWithRequestSuccess && shouldRandomlyDoSomething()) {
-            Log.e(TAG, "Simulating request failure  for request " + urlString);
+            Log.w(TAG, "Simulating request failure  for request " + urlString);
             throw new IOException("Monkey Exception");
         }
     }
