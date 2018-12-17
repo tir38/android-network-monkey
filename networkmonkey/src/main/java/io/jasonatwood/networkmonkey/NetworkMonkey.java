@@ -14,7 +14,7 @@ public interface NetworkMonkey extends Interceptor {
     void shouldMonkeyWithWifiConnection();
 
     /**
-     * Tell NetworkMonkey to randomly change response code to 404.
+     * Tell NetworkMonkey to randomly change response code to 409.
      */
     void shouldMonkeyWithResponseCode();
 

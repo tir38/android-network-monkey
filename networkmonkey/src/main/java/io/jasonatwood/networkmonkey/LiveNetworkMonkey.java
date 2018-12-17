@@ -90,7 +90,7 @@ public class LiveNetworkMonkey implements NetworkMonkey {
         Response response = chain.proceed(request);
 
         if (randomAction == Action.RESPONSE_CODE) {
-            return setResponseCodeTo404(urlString, response);
+            return setResponseCodeTo409(urlString, response);
         }
         return response;
     }
@@ -144,15 +144,15 @@ public class LiveNetworkMonkey implements NetworkMonkey {
         Log.d(TAG, "Turning wifi back on");
     }
 
-    private Response setResponseCodeTo404(String urlString, Response response) {
+    private Response setResponseCodeTo409(String urlString, Response response) {
         // if something really did go wrong, we want to know about it.
         if (!response.isSuccessful()) {
             return response;
         }
 
-        Log.w(TAG, "Changing response code to 404 for request " + urlString);
+        Log.w(TAG, "Changing response code to 409 for request " + urlString);
         return response.newBuilder()
-                .code(404)
+                .code(409)
                 .build();
     }
 
