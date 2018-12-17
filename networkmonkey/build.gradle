@@ -15,7 +15,7 @@ ext {
     siteUrl = 'https://github.com/tir38/android-network-monkey'
     gitUrl = 'https://github.com/tir38/android-network-monkey.git'
 
-    libraryVersion = '1.0.2'
+    libraryVersion = '1.0.3'
     libraryVersionCode = 3
 
     developerId = 'jasonatwood'
@@ -28,11 +28,10 @@ ext {
 }
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 28
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 25
+        targetSdkVersion 28
         versionCode libraryVersionCode
         versionName libraryVersion
     }
@@ -45,7 +44,7 @@ android {
 }
 
 dependencies {
-    compile 'com.squareup.okhttp3:okhttp:3.6.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
 }
 
 // Maven Group ID for the artifact
