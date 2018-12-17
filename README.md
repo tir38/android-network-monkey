@@ -133,7 +133,7 @@ Download via Maven:
 <dependency>
   <groupId>io.jasonatwood</groupId>
   <artifactId>networkmonkey</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
   <type>pom</type>
 </dependency>
 ```
@@ -141,7 +141,7 @@ Download via Maven:
 or Gradle:
 
 ```groovy
-compile 'io.jasonatwood:networkmonkey:1.1.0'
+compile 'io.jasonatwood:networkmonkey:1.1.1'
 ```
 
 Network Monkey requires at minimum Android API 14.
