@@ -133,7 +133,7 @@ Download via Maven:
 <dependency>
   <groupId>io.jasonatwood</groupId>
   <artifactId>networkmonkey</artifactId>
-  <version>1.0.2</version>
+  <version>1.1.0</version>
   <type>pom</type>
 </dependency>
 ```
@@ -141,7 +141,7 @@ Download via Maven:
 or Gradle:
 
 ```groovy
-compile 'io.jasonatwood:networkmonkey:1.0.2'
+compile 'io.jasonatwood:networkmonkey:1.1.0'
 ```
 
 Network Monkey requires at minimum Android API 14.
@@ -149,7 +149,7 @@ Network Monkey requires at minimum Android API 14.
 
 ## License
 
-    Copyright 2017 Jason Atwood
+    Copyright 2018 Jason Atwood
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -165,12 +165,12 @@ Network Monkey requires at minimum Android API 14.
     
     
 ## Release Steps
- * build .aar locally `./gradlew clean assemble`
- * move .aar into dogfood project and run project
  * bump `libraryVersion` and `libraryVersionCode` in build.gradle
+ * bump version number in dogfood project
+ * build .aar locally `./gradlew clean assemble`
+ * move .aar into personal dogfood project and run project
  * update CHANGELOG.md
  * updated README
  * build and upload to bintray `./gradlew clean bintrayUpload`
  * ensure latest version is uploaded `https://bintray.com/jasonatwood/maven/networkmonkey`
- * bump version number in dogfood project and ensure it builds
  * commit and push
