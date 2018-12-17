@@ -15,8 +15,8 @@ ext {
     siteUrl = 'https://github.com/tir38/android-network-monkey'
     gitUrl = 'https://github.com/tir38/android-network-monkey.git'
 
-    libraryVersion = '1.1.0'
-    libraryVersionCode = 4
+    libraryVersion = '1.1.1'
+    libraryVersionCode = 5
 
     developerId = 'jasonatwood'
     developerName = 'Jason Atwood'
