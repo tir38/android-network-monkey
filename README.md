@@ -1,4 +1,7 @@
 # Android Network Monkey
+
+UPDATED FROM BINTRAY TO MAVEN CENTRAL
+
 Let Network Monkey loose to monkey test your OkHttp web requests. Inspired by Netflix's [Chaos Monkey](https://github.com/Netflix/chaosmonkey), Network Monkey will randomly: 
 
 * turn off a device's wifi before making request
@@ -166,11 +169,15 @@ Network Monkey requires at minimum Android API 14.
     
 ## Release Steps
  * bump `libraryVersion` and `libraryVersionCode` in build.gradle
- * bump version number in dogfood project
+ * bump version number in sample project
  * build .aar locally `./gradlew clean assemble`
- * move .aar into personal dogfood project and run project
+ * move .aar into sample project and run project
  * update CHANGELOG.md
  * updated README
- * build and upload to bintray `./gradlew clean bintrayUpload`
- * ensure latest version is uploaded `https://bintray.com/jasonatwood/maven/networkmonkey`
+ * confirm ~/.gradle/gradlew.properties and gpg key
+ * build and upload to MavenCentral ` ./gradlew publish --no-daemon --no-parallel`
+ * ensure latest version is uploaded to staging repository `https://s01.oss.sonatype.org/#stagingRepositories`
+ * manually create release on Nexus
+ * bump sample project to point back to mavenCentral
+ * re-build sample project
  * commit and push
