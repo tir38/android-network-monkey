@@ -1,19 +1,25 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0-alpha02'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
+        classpath 'com.android.tools.build:gradle:4.2.0-beta05'
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.15.0'
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:1.4.10.2'
     }
 }
 
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
+    }
+    // since I'm publishing to https://s01.oss.sonatype.org
+    plugins.withId("com.vanniktech.maven.publish") {
+        mavenPublish {
+            sonatypeHost = "S01"
+        }
     }
 }
 
