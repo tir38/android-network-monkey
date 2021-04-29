@@ -4,11 +4,9 @@ UPDATED FROM BINTRAY TO MAVEN CENTRAL
 
 Let Network Monkey loose to monkey test your OkHttp web requests. Inspired by Netflix's [Chaos Monkey](https://github.com/Netflix/chaosmonkey), Network Monkey will randomly: 
 
-* turn off a device's wifi before making request
-* replace `200` response codes with `404`
+* replace `200` response codes with `4xx` code of choice
 * insert response time delays
 * throw network exceptions during request/response
-
 
 [ ![Download](https://api.bintray.com/packages/jasonatwood/maven/networkmonkey/images/download.svg) ](https://bintray.com/jasonatwood/maven/networkmonkey/_latestVersion)
 
@@ -20,31 +18,19 @@ Let Network Monkey loose to monkey test your OkHttp web requests. Inspired by Ne
 
 `NetworkMonkey` extends OkHttp3's [Interceptor](https://github.com/square/okhttp/wiki/Interceptors) to change something about the request/response. It's best to add `NetworkMonkey` as an [ApplicationInterceptor](https://github.com/square/okhttp/wiki/Interceptors#application-interceptors) with `.addInterceptor()` (vs. a [NetworkInterceptor](https://github.com/square/okhttp/wiki/Interceptors#network-interceptors)). It's also best to add `NetworkMonkey` as the *first* Interceptor, if you use multiple Interceptors. This ensures it has first say in monkeying with the request, and last say in monkeying with the response.
 
-```java
-OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
-NetworkMonkey networkMonkey = ...
-okHttpClientBuilder.addInterceptor(networkMonkey);
+```kotlin
+val okHttpClientBuilder = OkHttpClient.Builder()
+val networkMonkey: NetworkMonkey = ...
+okHttpClientBuilder.addInterceptor(networkMonkey)
 ```
 
 Network Monkey can monkey with several parts of a network request:
 
 
-#### Wifi Connection
-
-```java
-networkMonkey.shouldMonkeyWithWifiConnection();
-```
-
-This will tell Network Monkey to randomly disable a device's wifi connection. If this is your device's only data connection this is a good way to test your apps' response to 
-`connectivityManager.getActiveNetworkInfo()`. See [Additional Notes](#additional_notes)
- section about runtime permissions.
- 
- After 5 seconds Network Monkey will turn wifi back on (assuming your app didn't crash).
-
 #### Request Success
 
-```java
-networkMonkey.shouldMonkeyWithRequestSuccess();
+```kotlin
+networkMonkey.shouldMonkeyWithRequestSuccess()
 ```
 
 Sometimes OkHttp will throw an exception if there is an error with the network. This method will tell Network Monkey to randomly throw a `IOException` during a request/response to mimic OkHttp's behavior.
@@ -52,17 +38,17 @@ Sometimes OkHttp will throw an exception if there is an error with the network. 
 
 #### Response Code
 
-```java
-networkMonkey.shouldMonkeyWithResponseCode();
+```kotlin
+networkMonkey.shouldMonkeyWithResponseCode() // supply optional code, will default to 404
 ```
 
-This will tell Network Monkey to randomly replace a 200 success code with a 404. If Network Monkey detects a non-200 code it will let that pass through. That way if your app really is experiencing a problem from your network you are alerted to it.
+This will tell Network Monkey to randomly replace a 200 success code with a 404. If Network Monkey detects a non-200 code it will let that pass through. That way if your app really is experiencing a problem from your network you are alerted to it. You can override the default argument by supplying code in function
 
 
 #### Response Time
 
-```java
-networkMonkey.shouldMonkeyWithResponseTime(10000);
+```kotlin
+networkMonkey.shouldMonkeyWithResponseTime(10000)
 ```
 
 This will tell Network Monkey to randomly add a time delay (in milliseconds) to an existing request/response. This is a good way to test your UI to delays that high-latency-network users may experience.
@@ -70,8 +56,8 @@ This will tell Network Monkey to randomly add a time delay (in milliseconds) to 
 
 #### Jerk Mode
 
-```java
-networkMonkey.enableJerkMode();
+```kotlin
+networkMonkey.enableJerkMode()
 ```
             
 Normally the randomness of the above adjustments is 1:10, meaning that 10% of the time Network Monkey will monkey with something.
@@ -85,46 +71,39 @@ Obviously you don't want to run Network Monkey during production. This lib provi
 
 The simplest approach is to check `BuildConfig.DEBUG` and use `LiveNetworkMonkey`:
 
-```java
-// add NetworkMonkey but only on debug builds
+```kotlin
 if (BuildConfig.DEBUG) {
-    Context context = ....
-    NetworkMonkey networkMonkey = new LiveNetworkMonkey(context);
-    networkMonkey.shouldMonkeyWithResponseCode();
-    networkMonkey.shouldMonkeyWithWifiConnection();
-    networkMonkey.shouldMonkeyWithResponseTime(10000);
-    networkMonkey.shouldMonkeyWithRequestSuccess();
-    networkMonkey.enableJerkMode();
-    okHttpClientBuilder.addInterceptor(networkMonkey);
+    val networkMonkey = LiveNetworkMonkey()
+    networkMonkey.shouldMonkeyWithResponseCode()
+    networkMonkey.shouldMonkeyWithResponseTime(10000)
+    networkMonkey.shouldMonkeyWithRequestSuccess()
+    networkMonkey.enableJerkMode()
+    okHttpClientBuilder.addInterceptor(networkMonkey)
 }
 ```
 
 If your app relies on dependency injection you can simply provide `LiveNetworkMonkey` in debug and `NoOpNetworkMonkey` in production:
 
 
-```java
+```kotlin
 @Provides
 @Singleton
-NetworkMonkey provideNetworkMonkey(Context context) {
-    return new LiveNetworkMonkey(context);
+fun provideNetworkMonkey(): NetworkMonkey  {
+    LiveNetworkMonkey()
 }
 ```
 
-```java
+```kotlin
 @Provides
 @Singleton
-NetworkMonkey provideNetworkMonkey(Context context) {
-    return new NoOpNetworkMonkey();
+fun provideNetworkMonkey(): NetworkMonkey  {
+    NoOpNetworkMonkey()
 }
 ```
 
 If you run instrumentation tests that depend on your `OkHttpClient`, it's suggested that you also use `NoOpNetworkMonkey`. You don't want flaky tests do you?
 
 ## Additional Notes
-* The `Context` passed to `LiveNetworkMonkey` is turned into an application context, so don't worry about leaking your Activities.
-
-* If you call `networkMonkey.shouldMonkeyWithWifiConnection()` your app will need the     `<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>` permission. Unless your app already requests this permission, you should put this in the `AndroidManifest.xml` specific to your debug builds.
-
 * Every time Network Monkey decides to monkey with a connection, you will be notified by a log in Logcat.
 
 
@@ -136,7 +115,7 @@ Download via Maven:
 <dependency>
   <groupId>io.jasonatwood</groupId>
   <artifactId>networkmonkey</artifactId>
-  <version>1.1.1</version>
+  <version>[LATEST_VERSION]</version>
   <type>pom</type>
 </dependency>
 ```
@@ -144,7 +123,7 @@ Download via Maven:
 or Gradle:
 
 ```groovy
-compile 'io.jasonatwood:networkmonkey:1.1.1'
+compile 'io.jasonatwood:networkmonkey:[LATEST_VERSION]'
 ```
 
 Network Monkey requires at minimum Android API 14.
@@ -152,7 +131,7 @@ Network Monkey requires at minimum Android API 14.
 
 ## License
 
-    Copyright 2018 Jason Atwood
+    Copyright 2020 Jason Atwood
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

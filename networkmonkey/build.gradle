@@ -7,10 +7,10 @@ ext {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode libraryVersionCode
         versionName libraryVersion
     }
@@ -19,6 +19,15 @@ android {
         abortOnError true
         ignoreWarnings false
         lintConfig file('../config/lint.xml')
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 
